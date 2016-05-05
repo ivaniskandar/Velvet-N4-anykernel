@@ -3,9 +3,9 @@
 
 ## AnyKernel setup
 # EDIFY properties
-kernel.string=Velvet Kernel N4 installer by iskandar1023
+kernel.string=Velvet Kernel N4 by iskandar1023
 do.devicecheck=1
-do.initd=1
+do.initd=0
 do.modules=0
 do.cleanup=1
 device.name1=mako
@@ -16,7 +16,6 @@ device.name5=Google
 
 # shell variables
 block=/dev/block/platform/msm_sdcc.1/by-name/boot;
-initd=/system/etc/init.d;
 
 ## end setup
 
@@ -203,10 +202,6 @@ dump_boot;
 
 # begin ramdisk changes
 
-# insert initd scripts
-cp -fp $patch/init.d/* $initd
-chmod -R 766 $initd
-
 # add boot logo
 cp -vr ../extras/initlogo.rle .
 
@@ -215,23 +210,23 @@ backup_file default.prop;
 replace_string default.prop "ro.adb.secure=0" "ro.adb.secure=1" "ro.adb.secure=0";
 replace_string default.prop "ro.secure=0" "ro.secure=1" "ro.secure=0";
 
-# cleanup
-if [ -e /system/bin/mpdecision ] ; then
-	busybox mv /system/bin/mpdecision /system/bin/mpdecision_bck
-fi
-if [ -e /system/bin/thermald ] ; then
-	busybox mv /system/bin/thermald /system/bin/thermald_bck
-fi
-if [ -e /system/lib/hw/power.msm8960.so ] ; then
-	busybox mv /system/lib/hw/power.msm8960.so /system/lib/hw/power.msm8960.so_bck
-fi
-if [ -e /system/lib/hw/power.mako.so ] ; then
-	busybox mv /system/lib/hw/power.mako.so /system/lib/hw/power.mako.so_bck
-fi
-
 # end ramdisk changes
 
 write_boot;
+
+# system cleanup
+if [ -e /system/bin/mpdecision ] ; then
+	mv /system/bin/mpdecision /system/bin/mpdecision_bck
+fi
+if [ -e /system/bin/thermald ] ; then
+	mv /system/bin/thermald /system/bin/thermald_bck
+fi
+if [ -e /system/lib/hw/power.msm8960.so ] ; then
+	mv /system/lib/hw/power.msm8960.so /system/lib/hw/power.msm8960.so_bck
+fi
+if [ -e /system/lib/hw/power.mako.so ] ; then
+	mv /system/lib/hw/power.mako.so /system/lib/hw/power.mako.so_bck
+fi
 
 ## end install
 
